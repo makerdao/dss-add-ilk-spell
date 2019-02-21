@@ -9,24 +9,24 @@ contract MomLike {
 }
 
 contract DssAddIlkSpell {
-    bool done;
-    bytes32 ilk;
-    address vat;
-    address pit;
-    address cat;
-    address jug;
-    address spotter;
-    address mom;
-    address momLib;
-    address adapter;
-    address mover;
-    address pip;
-    address flip;
-    uint line;
-    uint mat;
-    uint tax;
-    uint lump;
-    uint chop;
+    bool public done;
+    bytes32 public ilk;
+    address public vat;
+    address public pit;
+    address public cat;
+    address public jug;
+    address public spotter;
+    address public mom;
+    address public momLib;
+    address public adapter;
+    address public mover;
+    address public pip;
+    address public flip;
+    uint public line;
+    uint public mat;
+    uint public tax;
+    uint public chop;
+    uint public lump;
 
     uint constant ONE = 10 ^ 27;
 
