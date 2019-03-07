@@ -22,7 +22,6 @@ Spell contract to deploy a new collateral type in the DSS system.
 - `export PIP=<TOKEN/USD FEED ADDR>`
 - `export ILK="$(seth --to-bytes32 "$(seth --from-ascii "<COLLATERAL NAME>")")"`
 - `export MCD_VAT=<VAT ADDR>`
-- `export MCD_PIT=<PIT ADDR>`
 - `export MCD_CAT=<CAT ADDR>`
 - `export MCD_JUG=<JUG ADDR>`
 - `export MCD_SPOT=<SPOTTER ADDR>`
@@ -52,7 +51,7 @@ Spell contract to deploy a new collateral type in the DSS system.
 
 6) Deploy Spell
 
-- `export SPELL=$(seth send --create out/DssAddIlkSpell.bin 'DssAddIlkSpell(bytes32,address[11] memory,uint256[5] memory)' $ILK ["${MCD_VAT#0x}","${MCD_PIT#0x}","${MCD_CAT#0x}","${MCD_JUG#0x}","${MCD_SPOT#0x}","${MCD_MOM#0x}","${MCD_MOM_LIB#0x}","${JOIN#0x}","${MOVE#0x}","${PIP#0x}","${FLIP#0x}"] ["$LINE","$MAT","$TAX","$CHOP","$LUMP"])`
+- `export SPELL=$(seth send --create out/DssAddIlkSpell.bin 'DssAddIlkSpell(bytes32,address[11] memory,uint256[5] memory)' $ILK ["${MCD_VAT#0x}","${MCD_CAT#0x}","${MCD_JUG#0x}","${MCD_SPOT#0x}","${MCD_MOM#0x}","${MCD_MOM_LIB#0x}","${JOIN#0x}","${MOVE#0x}","${PIP#0x}","${FLIP#0x}"] ["$LINE","$MAT","$TAX","$CHOP","$LUMP"])`
 
 7) Create slate
 

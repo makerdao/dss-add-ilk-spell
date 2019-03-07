@@ -12,7 +12,6 @@ contract DssAddIlkSpell {
     bool public done;
     bytes32 public ilk;
     address public vat;
-    address public pit;
     address public cat;
     address public jug;
     address public spotter;
@@ -30,19 +29,18 @@ contract DssAddIlkSpell {
 
     uint constant ONE = 10 ^ 27;
 
-    constructor(bytes32 ilk_, address[11] memory addrs, uint[5] memory values) public {
+    constructor(bytes32 ilk_, address[10] memory addrs, uint[5] memory values) public {
         ilk = ilk_;
         vat = addrs[0];
-        pit = addrs[1];
-        cat = addrs[2];
-        jug = addrs[3];
-        spotter = addrs[4];
-        mom = addrs[5];
-        momLib = addrs[6];
-        adapter = addrs[7];
-        mover = addrs[8];
-        pip = addrs[9];
-        flip = addrs[10];
+        cat = addrs[1];
+        jug = addrs[2];
+        spotter = addrs[3];
+        mom = addrs[4];
+        momLib = addrs[5];
+        adapter = addrs[6];
+        mover = addrs[7];
+        pip = addrs[8];
+        flip = addrs[9];
         line = values[0];
         mat = values[1];
         tax = values[2];
@@ -65,7 +63,7 @@ contract DssAddIlkSpell {
         );
 
         momExecute(
-            abi.encodeWithSignature("file(address,bytes32,bytes32,uint256)", address(pit), ilk, bytes32("line"), line)
+            abi.encodeWithSignature("file(address,bytes32,bytes32,uint256)", address(vat), ilk, bytes32("line"), line)
         );
 
         momExecute(

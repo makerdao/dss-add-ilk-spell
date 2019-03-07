@@ -34,7 +34,6 @@ contract DssAddIlkSpellTest is DssDeployTestBase {
             ilk,
             [
                 address(vat),
-                address(pit),
                 address(cat),
                 address(jug),
                 address(spotter),
@@ -46,7 +45,7 @@ contract DssAddIlkSpellTest is DssDeployTestBase {
                 address(nctFlip)
             ],
             [
-                10000 ether, // line
+                10000 * 10 ** 45, // line
                 1500000000 ether, // mat
                 1.05 * 10 ** 27, // tax
                 ONE, // chop
@@ -62,8 +61,8 @@ contract DssAddIlkSpellTest is DssDeployTestBase {
     }
 
     function testVariables() public {
-        (,uint line) = pit.ilks(ilk);
-        assertEq(line, uint(10000 ether));
+        (,,,uint line,) = vat.ilks(ilk);
+        assertEq(line, uint(10000 * 10 ** 45));
         (PipLike pip, uint mat) = spotter.ilks(ilk);
         assertEq(address(pip), address(nctPip));
         assertEq(mat, uint(1500000000 ether));
@@ -81,7 +80,7 @@ contract DssAddIlkSpellTest is DssDeployTestBase {
         assertEq(dai.balanceOf(address(this)), 0);
         nctJoin.join(bytes32(bytes20(address(this))), 1 ether);
 
-        pit.frob(ilk, bytes32(bytes20(address(this))), bytes32(bytes20(address(this))), bytes32(bytes20(address(this))), 1 ether, 100 ether);
+        vat.frob(ilk, bytes32(bytes20(address(this))), bytes32(bytes20(address(this))), bytes32(bytes20(address(this))), 1 ether, 100 ether);
 
         daiJoin.exit(bytes32(bytes20(address(this))), address(this), 100 ether);
         assertEq(dai.balanceOf(address(this)), 100 ether);
@@ -89,21 +88,21 @@ contract DssAddIlkSpellTest is DssDeployTestBase {
 
     function testFlip() public {
         nctJoin.join(bytes32(bytes20(address(this))), 1 ether);
-        pit.frob(ilk, bytes32(bytes20(address(this))), bytes32(bytes20(address(this))), bytes32(bytes20(address(this))), 0.5 ether, 100 ether); // Maximun DAI generated
+        vat.frob(ilk, bytes32(bytes20(address(this))), bytes32(bytes20(address(this))), bytes32(bytes20(address(this))), 0.5 ether, 100 ether); // Maximun DAI generated
         nctPip.poke(bytes32(uint(300 ether - 1))); // Decrease price in 1 wei
         spotter.poke(ilk);
         uint nflip = cat.bite(ilk, bytes32(bytes20(address(this))));
         assertEq(vat.gem(ilk, bytes32(bytes20(address(nctFlip)))), 0);
         uint batchId = cat.flip(nflip, 100 ether);
-        assertEq(vat.gem(ilk, bytes32(bytes20(address(nctFlip)))), mul(0.5 ether, ONE));
+        assertEq(vat.gem(ilk, bytes32(bytes20(address(nctFlip)))), 0.5 ether);
 
         address(user1).transfer(10 ether);
-        user1.doEthJoin(ethJoin, bytes32(bytes20(address(user1))), 10 ether);
-        user1.doFrob(pit, "ETH", bytes32(bytes20(address(user1))), bytes32(bytes20(address(user1))), bytes32(bytes20(address(user1))), 10 ether, 1000 ether);
+        user1.doEthJoin(weth, ethJoin, bytes32(bytes20(address(user1))), 10 ether);
+        user1.doFrob(vat, "ETH", bytes32(bytes20(address(user1))), bytes32(bytes20(address(user1))), bytes32(bytes20(address(user1))), 10 ether, 1000 ether);
 
         address(user2).transfer(10 ether);
-        user2.doEthJoin(ethJoin, bytes32(bytes20(address(user2))), 10 ether);
-        user2.doFrob(pit, "ETH", bytes32(bytes20(address(user2))), bytes32(bytes20(address(user2))), bytes32(bytes20(address(user2))), 10 ether, 1000 ether);
+        user2.doEthJoin(weth, ethJoin, bytes32(bytes20(address(user2))), 10 ether);
+        user2.doFrob(vat, "ETH", bytes32(bytes20(address(user2))), bytes32(bytes20(address(user2))), bytes32(bytes20(address(user2))), 10 ether, 1000 ether);
 
         user1.doHope(daiMove, address(nctFlip));
         user2.doHope(daiMove, address(nctFlip));
