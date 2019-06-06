@@ -25,40 +25,46 @@ Spell contract to deploy a new collateral type in the DSS system.
 - `export MCD_CAT=<CAT ADDR>`
 - `export MCD_JUG=<JUG ADDR>`
 - `export MCD_SPOT=<SPOTTER ADDR>`
-- `export MCD_MOM=<MOM ADDR>`
-- `export MCD_MOM_LIB=<MOM LIB ADDR>`
-- `export MCD_MOVE_DAI=<DAI MOVE ADDR>`
+- `export MCD_PAUSE=<PAUSE ADDR>`
+- `export MCD_PAUSE_PROXY=<PAUSE PROXY ADDR>`
 - `export MCD_ADM=<CHIEF ADDR>`
+- `export MCD_END=<END ADDR>`
 
-2) Deploy Adapter (e.g. [GemJoin](https://github.com/makerdao/dss/blob/master/src/join.sol#L35))
+2) Deploy Adapter (e.g. [GemJoin](https://github.com/makerdao/dss/blob/master/src/join.sol))
 
-- `export JOIN=$(dapp create GemJoin $MCD_VAT $ILK $TOKEN)`
+- `export JOIN=$(dapp create GemJoin "$MCD_VAT" "$ILK" "$TOKEN")`
 
-3) Deploy Move (e.g. [GemMove](https://github.com/makerdao/dss/blob/master/src/move.sol#L25))
+3) Deploy Flip Auction and set permissions (e.g. [Flipper](https://github.com/makerdao/dss/blob/master/src/flip.sol))
 
-- `export MOVE=$(dapp create GemMove $MCD_VAT $ILK)`
+- `export FLIP=$(dapp create Flipper "$MCD_VAT" "$ILK")`
 
-4) Deploy Flip Auction (e.g. [Flipper](https://github.com/makerdao/dss/blob/master/src/flip.sol#L44))
+- `seth send "$FLIP" 'rely(address)' "$MCD_PAUSE_PROXY"`
 
-- `export FLIP=$(dapp create Flipper $MCD_MOVE_DAI $MOVE)`
+- `seth send "$FLIP" 'deny(address)' "$ETH_FROM"`
 
-5) Export New Collateral Types variables
-- `export LINE=<DEBT CEILING VALUE>` (e.g. 5M DAI `"$(seth --to-uint256 "$(seth --to-wei 5000000 ETH)")"`)
-- `export MAT=<LIQUIDATION RATIO VALUE>` (e.g. 150% `"$(seth --to-uint256 "$(seth --to-wei 1500000000 ETH)")"`)
-- `export TAX=<STABILITY FEE VALUE>` (e.g. 1% yearly `"$(seth --to-uint256 1000000000315522921573372069)"`)
-- `export CHOP=<LIQUIDATION PENALTY VALUE>` (e.g. 10% `"$(seth --to-uint256 "$(seth --to-wei 1100000000 ETH)")"`)
-- `export LUMP=<LIQUIDATION QUANTITY VALUE>` (e.g. 1K DAI `"$(seth --to-uint256 "$(seth --to-wei 1000 ETH)")"`)
+4) Export New Collateral Type variables
+- `export LINE=<DEBT CEILING VALUE>` (e.g. 5M DAI `"$(seth --to-uint256 $(echo "5000000"*10^45 | bc))"`)
+- `export MAT=<LIQUIDATION RATIO VALUE>` (e.g. 150% `"$(seth --to-uint256 $(echo "150"*10^25 | bc))"`)
+- `export DUTY=<STABILITY FEE VALUE>` (e.g. 1% yearly `"$(seth --to-uint256 1000000000315522921573372069)"`)
+- `export CHOP=<LIQUIDATION PENALTY VALUE>` (e.g. 10% `"$(seth --to-uint256 $(echo "110"*10^25 | bc))"`)
+- `export LUMP=<LIQUIDATION QUANTITY VALUE>` (e.g. 1K DAI `"$(seth --to-uint256 $(echo "1000"*10^18 | bc))"`)
 
-6) Deploy Spell
+5) Deploy Spell
 
-- `export SPELL=$(seth send --create out/DssAddIlkSpell.bin 'DssAddIlkSpell(bytes32,address[11] memory,uint256[5] memory)' $ILK ["${MCD_VAT#0x}","${MCD_CAT#0x}","${MCD_JUG#0x}","${MCD_SPOT#0x}","${MCD_MOM#0x}","${MCD_MOM_LIB#0x}","${JOIN#0x}","${MOVE#0x}","${PIP#0x}","${FLIP#0x}"] ["$LINE","$MAT","$TAX","$CHOP","$LUMP"])`
+- `export SPELL=$(seth send --create out/DssAddIlkSpell.bin 'DssAddIlkSpell(bytes32,address,address[8] memory,uint256[5] memory)' $ILK $MCD_PAUSE ["${MCD_VAT#0x}","${MCD_CAT#0x}","${MCD_JUG#0x}","${MCD_SPOT#0x}","${MCD_END#0x}","${JOIN#0x}","${PIP#0x}","${FLIP#0x}"] ["$LINE","$MAT","$DUTY","$CHOP","$LUMP"])`
 
-7) Create slate
+6) Create slate
 
-- `seth send $MCD_ADM 'etch(address[] memory)' ["${SPELL#0x}"]'`
+- `seth send "$MCD_ADM" 'etch(address[] memory)' ["${SPELL#0x}"]`
 
-8) Wait for the Spell to be elected
+7) Wait for the Spell to be elected
 
-9) Cast Spell
+8) Schedule Spell
 
-- `seth send $SPELL 'cast()'`
+- `seth send "$SPELL" 'schedule()'`
+
+9) Wait for Pause delay
+
+10) Cast Spell
+
+- `seth send "$SPELL" 'cast()'`
