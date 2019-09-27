@@ -12,7 +12,6 @@ contract PauseLike {
 
 contract ConfigLike {
     function init(bytes32) public;
-    function file(bytes32, address) public;
     function file(bytes32, bytes32, address) public;
     function file(bytes32, bytes32, uint) public;
     function rely(address) public;
@@ -34,13 +33,14 @@ contract IlkDeployer {
         // values[3] = chop
         // values[4] = lump
 
-        ConfigLike(addrs[3]).file(ilk_, address(addrs[6])); // vat.file(ilk_, pip);
+        ConfigLike(addrs[3]).file(ilk_, "pip", address(addrs[6])); // vat.file(ilk_, "pip", pip);
 
         ConfigLike(addrs[1]).file(ilk_, "flip", addrs[7]); // cat.file(ilk_, "flip", flip);
         ConfigLike(addrs[0]).init(ilk_); // vat.init(ilk_);
         ConfigLike(addrs[2]).init(ilk_); // jug.init(ilk_);
 
         ConfigLike(addrs[0]).rely(addrs[5]); // vat.rely(join);
+        ConfigLike(addrs[7]).rely(addrs[1]); // flip.rely(cat);
         ConfigLike(addrs[7]).rely(addrs[4]); // flip.rely(end);
 
         ConfigLike(addrs[0]).file(ilk_, "line", values[0]); // vat.file(ilk_, "line", line);

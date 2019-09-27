@@ -108,7 +108,7 @@ contract DssAddIlkSpellTest is DssDeployTestBase {
         user1.doHope(address(vat), address(nctFlip));
         user2.doHope(address(vat), address(nctFlip));
 
-         user1.doTend(address(nctFlip), batchId, 1 ether, rad(100 ether));
+        user1.doTend(address(nctFlip), batchId, 1 ether, rad(100 ether));
         user2.doTend(address(nctFlip), batchId, 1 ether, rad(140 ether));
         user1.doTend(address(nctFlip), batchId, 1 ether, rad(180 ether));
         user2.doTend(address(nctFlip), batchId, 1 ether, rad(200 ether));
