@@ -1,4 +1,4 @@
-pragma solidity ^0.5.4;
+pragma solidity 0.5.11;
 
 contract SpotterLike {
     function poke(bytes32) public;
