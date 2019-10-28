@@ -7,13 +7,14 @@ import "dss-deploy/DssDeploy.t.base.sol";
 import "./DssAddIlkSpell.sol";
 
 import {PipLike} from "dss/spot.sol";
+import {GemJoin} from "dss/join.sol";
 
 contract DssAddIlkSpellTest is DssDeployTestBase {
     DssAddIlkSpell spell;
 
     bytes32 constant ilk = "NCT"; // New Collateral Type
     DSToken     nct;
-    GemJoin1    nctJoin;
+    GemJoin     nctJoin;
     Flipper     nctFlip;
     DSValue     nctPip;
 
@@ -23,7 +24,7 @@ contract DssAddIlkSpellTest is DssDeployTestBase {
 
         nct = new DSToken(ilk);
         nct.mint(1 ether);
-        nctJoin = new GemJoin1(address(vat), ilk, address(nct));
+        nctJoin = new GemJoin(address(vat), ilk, address(nct));
         nctPip = new DSValue();
         nctPip.poke(bytes32(uint(300 ether)));
         nctFlip = flipFab.newFlip(address(vat), ilk);
