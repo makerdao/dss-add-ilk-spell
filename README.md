@@ -30,9 +30,9 @@ Spell contract to deploy a new collateral type in the DSS system.
 - `export MCD_ADM=<CHIEF ADDR>`
 - `export MCD_END=<END ADDR>`
 
-2) Deploy Adapter (e.g. [GemJoin1](https://github.com/makerdao/dss-deploy/blob/master/src/join.sol#L34))
+2) Deploy Adapter (e.g. [GemJoin](https://github.com/makerdao/dss/blob/master/src/join.sol#L62))
 
-- `export JOIN=$(dapp create GemJoin1 "$MCD_VAT" "$ILK" "$TOKEN")`
+- `export JOIN=$(dapp create GemJoin "$MCD_VAT" "$ILK" "$TOKEN")`
 
 3) Deploy Flip Auction and set permissions (e.g. [Flipper](https://github.com/makerdao/dss/blob/master/src/flip.sol))
 
